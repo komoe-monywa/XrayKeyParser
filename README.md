@@ -160,7 +160,7 @@ or whitelist mode
   ]
 ```
 --------
-I found few servers wich can get simple request and send json response. To check it i used curl
+I found a few servers wich can get simple request and send json response. To check it i used curl
 ```
 curl https://ipinfo.io/1.2.3.4
 curl api.2ip.io/1.2.3.4
