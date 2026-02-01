@@ -44,7 +44,7 @@ func decodeTrojanServerConfig(str string) bool {
 func createTrojanServerConfig(ser_passw string, params string) (errstr string) {
 	ind := strings.IndexByte(ser_passw, '@')
 	if ind == -1 {
-		errString := "Invalid format of string " + ser_passw
+		errString := "TR Invalid format of string " + ser_passw
 		return errString //, 1
 	} else {
 		conf := new(TrojanServerConfig)
@@ -56,12 +56,12 @@ func createTrojanServerConfig(ser_passw string, params string) (errstr string) {
 		//check ip
 		if !isIpValid(config.IpCheckServer, conf.Address, config.IpCheckKey,
 			config.IpCheckValue, config.IpCheckBlackList) {
-			return "Ip is invalid"
+			return "TR Ip is invalid"
 		}
 		//
 		i, err := strconv.Atoi(ser[portInd+1:])
 		if err != nil {
-			errString := "Invalid format of port " + ser
+			errString := "TR Invalid format of port " + ser
 			return errString //, 4
 		}
 		conf.Port = i

@@ -76,19 +76,19 @@ func createSsServerConfig(str string) (errstr string) {
 		}
 		index = strings.IndexByte(spstr, ':')
 		if index == -1 {
-			errString := "Invalid format of string " + spstr
+			errString := "SS Invalid format of string " + spstr
 			return errString //, 3
 		} else {
 			conf.Address = spstr[:index]
 			//check ip
 			if !isIpValid(config.IpCheckServer, conf.Address, config.IpCheckKey,
 				config.IpCheckValue, config.IpCheckBlackList) {
-				return "Ip is invalid"
+				return "SS Ip is invalid"
 			}
 			//
 			i, err := strconv.Atoi(spstr[index+1:])
 			if err != nil {
-				errString := "Invalid format of port " + spstr
+				errString := "SS Invalid format of port " + spstr
 				return errString //, 4
 			}
 			conf.Port = i

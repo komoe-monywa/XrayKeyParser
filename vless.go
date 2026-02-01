@@ -52,24 +52,29 @@ func createVlessServerConfig(uid_ser string, params string) (errstr string) {
 	//var index int
 	ind := strings.IndexByte(uid_ser, '@')
 	if ind == -1 {
-		errString := "Invalid format of string " + uid_ser
+		errString := "VL Invalid format of string " + uid_ser
 		return errString //, 1
 	} else {
 		conf := new(VlessServerConfig)
 		uid := uid_ser[:ind]
-		ser := uid_ser[ind+1:]
+		ser := uid_ser[ind+1:] // server (address + port)
 		portInd := strings.IndexByte(ser, ':')
 		conf.Address = ser[:portInd]
 		//check ip
 		if !isIpValid(config.IpCheckServer, conf.Address, config.IpCheckKey,
 			config.IpCheckValue, config.IpCheckBlackList) {
-			return "Ip is invalid"
+			return "VL Ip is invalid"
+		}
+		//
+		j := len(ser) - 1
+		if ser[j] == '/' { // outline format
+			ser = ser[:j]
 		}
 		//
 		i, err := strconv.Atoi(ser[portInd+1:])
 		if err != nil {
-			errString := "Invalid format of port " + ser
-			return errString //, 4
+			errString := "VL Invalid format of port " + ser
+			return errString //
 		}
 		conf.Port = i
 		user := new(VlessUser)

@@ -52,7 +52,7 @@ func createVmessServerConfig(str string) (errstr string) {
 		//check ip
 		if !isIpValid(config.IpCheckServer, conf.Address, config.IpCheckKey,
 			config.IpCheckValue, config.IpCheckBlackList) {
-			return "Ip is invalid"
+			return "VM Ip is invalid"
 		}
 		//
 		switch t := params["port"].(type) {
@@ -61,12 +61,12 @@ func createVmessServerConfig(str string) (errstr string) {
 		case string:
 			i, err := strconv.Atoi(t)
 			if err != nil {
-				return "Cannot convert vmess port"
+				return "VM Cannot convert vmess port"
 			} else {
 				conf.Port = i
 			}
 		default:
-			return "Invalid format of vmess port"
+			return "VM Invalid format of vmess port"
 		}
 		user := new(VmessUser)
 		user.Id = params["id"].(string)
