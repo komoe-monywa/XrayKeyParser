@@ -160,14 +160,15 @@ or whitelist mode
   ]
 ```
 --------
-I found two servers wich can get simple request and send json response. To check it i used curl
+I found few servers wich can get simple request and send json response. To check it i used curl
 ```
 curl https://ipinfo.io/1.2.3.4
-```
-or
-```
 curl api.2ip.io/1.2.3.4
+curl https://geoapi.info/api/geo?1.2.3.4
+curl https://geo.kamero.ai/api/geo?1.2.3.4
 ```
+
+
 In output you can see how it returns country. For example
 ```
 curl api.2ip.io/1.2.3.4
