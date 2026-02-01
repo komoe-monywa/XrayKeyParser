@@ -189,4 +189,4 @@ curl api.2ip.io/1.2.3.4
     "signup": "Get more at 2ip.io/free"
 }
 ```
-If you know another servers like those two let me know
+If you know another servers like those let me know
