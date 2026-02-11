@@ -1,4 +1,4 @@
-package main
+package xrkeyparser
 
 import (
 	"bytes"
@@ -443,119 +443,7 @@ func saveParseResult(resFile os.File) bool {
 	}
 }
 
-func main() {
-	restart := false
-	args := os.Args
-	args_count := len(args)
-	if args_count > 1 {
-		if args[1] == "help" {
-			fmt.Println("help not ready")
-			os.Exit(1)
-		} else if args[1] == "version" {
-			fmt.Println("version 1.0")
-			os.Exit(1)
-		} else {
-			path := args[1]
-			if fileExists(path) {
-				readConfig(path)
-				//fmt.Println(config)
-			} else {
-				fmt.Println("config file not exists")
-				os.Exit(1)
-			}
-		}
-	}
-	linksCount = len(config.Links)
-	if linksCount == 0 {
-		fmt.Println("Links for parsing is not defined")
-		os.Exit(1)
-	}
-	var waitgroup sync.WaitGroup
-	resultFile, err := os.Create(config.OutputFile)
-	if err != nil { // если возникла ошибка
-		fmt.Println("Unable to create file:", err)
-	}
-	defer resultFile.Close()
-	for i := 0; i < linksCount; i++ {
-		waitgroup.Add(1)
-		go getHtml(config.Links[i], &waitgroup)
-	}
-	waitgroup.Wait()
-	saveRes := saveParseResult(*resultFile)
-	// --------
-	if saveRes {
-		rawConf, err := os.ReadFile(config.OutputFile) //
-		if err != nil {
-			fmt.Println("Unable to read parsingresult file:", err)
-		} else {
-			var middle []byte
-			if ssConfToSave > 0 {
-				section := ReadSection("xrss", rawConf)
-				middle = bytes.Join([][]byte{middle, section}, nil)
-			}
-			if vlessConfToSave > 0 {
-				section := ReadSection("xrvless", rawConf)
-				if len(middle) > 0 {
-					middle = append(middle, ',')
-				}
-				middle = bytes.Join([][]byte{middle, section}, nil)
-			}
-			if vmessConfToSave > 0 {
-				section := ReadSection("xrvmess", rawConf)
-				if len(middle) > 0 {
-					middle = append(middle, ',')
-				}
-				middle = bytes.Join([][]byte{middle, section}, nil)
-			}
-			if trojanConfToSave > 0 {
-				section := ReadSection("xrtrojan", rawConf)
-				if len(middle) > 0 {
-					middle = append(middle, ',')
-				}
-				middle = bytes.Join([][]byte{middle, section}, nil)
-			}
-			if len(middle) > 0 && setConfigs(config.XrConfigFile, middle, config.ServersEditPos) {
-				restart = true
-			}
-		}
-	}
-	// --------
-	/*if ssConfToSave > 0 {
-		if saveRes {
-			rawSsConf, err := os.ReadFile(config.OutputFile) //
-			if err != nil {
-				fmt.Println("Unable to read parsingresult file:", err)
-			}
-			middle := ReadSection("xrss", rawSsConf) // rawSsConf[1 : len(rawSsConf)-1]
-			if middle != nil && setSsServiceConfig(config.XrConfigFile, middle) {
-				restart = true
-			} else {
-				ssConfToSave = 0
-			}
-		}
-	}
-	if vlessConfToSave > 0 {
-		if saveRes {
-			rawVlConf, err := os.ReadFile(config.OutputFile) //
-			if err != nil {
-				fmt.Println("Unable to read parsingresult file:", err)
-			}
-			middle := ReadSection("xrvless", rawVlConf) // rawSsConf[1 : len(rawSsConf)-1]
-			if middle != nil && setVlServiceConfig(config.XrConfigFile, middle) {
-				restart = true
-			} else {
-				vlessConfToSave = 0
-			}
-		}
-	}
-	if vmessConfToSave > 0 {
 
-	}*/
-	if restart {
-		restartService()
-	}
-	fmt.Println("parser finish")
-}
 
 func restartService() {
 	xrbin, lookerr := exec.LookPath(config.XrPath)
