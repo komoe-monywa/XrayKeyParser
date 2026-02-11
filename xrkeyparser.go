@@ -1,7 +1,6 @@
 package xrkeyparser
 
 import (
-	"bytes"
 	//"encoding/base64"
 	"encoding/json"
 	"errors"
@@ -9,7 +8,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"os/exec"
 
 	//"strconv"
 	//"strings"
