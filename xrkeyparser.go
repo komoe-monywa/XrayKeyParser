@@ -635,3 +635,37 @@ func findTokenEnd(data []byte, startpos int, end int, token byte, closeToken byt
 	}
 	return 0 // error - token not found
 }
+
+// ParseXrayKey parses a supported Xray URI and returns an XrayConf
+func ParseXrayKey(rawURI string) (XrayConf, error) {
+	var conf XrayConf
+
+	if strings.HasPrefix(rawURI, "ss://") {
+		ok := decodeSsServerConfig(rawURI) // your existing decodeSsServerConfig should return XrayConf
+		if !ok {
+			return XrayConf{}, fmt.Errorf("failed to parse ss:// URI")
+		}
+		// convert decoded data to conf
+	} else if strings.HasPrefix(rawURI, "vless://") {
+		ok := decodeVlessServerConfig(rawURI)
+		if !ok {
+			return XrayConf{}, fmt.Errorf("failed to parse vless:// URI")
+		}
+	} else if strings.HasPrefix(rawURI, "vmess://") {
+		ok := decodeVmessServerConfig(rawURI)
+		if !ok {
+			return XrayConf{}, fmt.Errorf("failed to parse vmess:// URI")
+		}
+	} else if strings.HasPrefix(rawURI, "trojan://") {
+		ok := decodeTrojanServerConfig(rawURI)
+		if !ok {
+			return XrayConf{}, fmt.Errorf("failed to parse trojan:// URI")
+		}
+	} else {
+		return XrayConf{}, fmt.Errorf("unsupported URI scheme")
+	}
+
+	// TODO: populate `conf` from the decoded data
+	return conf, nil
+}
+
