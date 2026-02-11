@@ -1,4 +1,4 @@
-package main
+package xrkeyparser
 
 import (
 	"encoding/base64"
