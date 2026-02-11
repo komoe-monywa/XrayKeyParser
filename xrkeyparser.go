@@ -445,61 +445,6 @@ func saveParseResult(resFile os.File) bool {
 
 
 
-func restartService() {
-	xrbin, lookerr := exec.LookPath(config.XrPath)
-	if lookerr != nil {
-		fmt.Println("Unable to find xray bin:", lookerr)
-	} else { // restart ss
-		//env := os.Environ()
-		cmd := exec.Command(xrbin, config.XrRestartCommand...)
-		cmd.Stdout = os.Stdout
-		err := cmd.Start() //syscall.Exec(ssbin,config.SsRestartCommand,env)
-		if err != nil {
-			fmt.Println("Unable to restart xray:", err)
-		}
-	}
-}
-
-func setConfigs(path string, middle []byte, editpos int) bool {
-	if fileExists(path) {
-		file, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR, os.ModePerm)
-		if err != nil { // если возникла ошибка
-			fmt.Println("Unable to open file:", err)
-			return false
-		}
-		defer file.Close()
-		data, err := os.ReadFile(path)
-		if err != nil {
-			fmt.Println("Unable to read xray config file:", err)
-			return false
-		}
-		secPos := findSection(data, config.ConfigSectionPath)
-		res, startPosToEdit, endPosToEdit := findPosToEdit(data, secPos, editpos)
-		if res {
-			first := data[:startPosToEdit+1]
-			if editpos > 0 {
-				first = append(first, ',')
-			}
-			last := data[endPosToEdit:]
-			newdata := bytes.Join([][]byte{first, middle, last}, nil) //make([]byte, 0, len(first)+len(ssConfigs)+len(last))
-
-			_, writeerr := file.Write(newdata) //os.WriteFile(path, newdata, perm)
-			if writeerr != nil {
-				fmt.Println("Unable to write config file:", writeerr)
-				return false
-			}
-			truncerr := file.Truncate(int64(len(newdata)))
-			if truncerr != nil {
-				fmt.Println("Unable to set size of config file:", truncerr)
-				return false
-			}
-		}
-	} else {
-		return false
-	}
-	return true
-}
-
 /*func setSsServiceConfig(path string, middle []byte) bool {
 	if fileExists(path) {
 		file, err := os.OpenFile(path, os.O_CREATE|os.O_RDWR, os.ModePerm)
